@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<style>
+body{
+	margin:0px;
+}
+
+</style>
+</head>
+
+<body> 
+
+<div id= 'bkgd' style="position:absolute;width:100vw; height: 100vh;">
+
+<img src="./tree.jpg" style = "position:absolute;width:100vw; height: 100vh">
+
+<button id='toggleLight'style = "position:absolute;width:5vw; height: 3vh;left: 30vw;top:2vh;">
+Turn On
+</button>
+<button id='toggleMode'style = "position:absolute;width:5vw; height: 3vh;left: 70vw;top:2vh;">
+Mode
+</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<script>
+class Lamp {
+
+  constructor(pos,color) {
+    this.name = Lamp.id++;
+    this.myStatus = false;
+    
+    let el = document.createElement ('div');
+    el.id = this.name;
+    let text = document.createTextNode (name + ' is OFF');
+    let bkgd = document.getElementById('bkgd');
+    bkgd.appendChild(el);
+    this.hue = color;
+
+    // styles
+    el.setAttribute ("style",`background-color: hsl(${this.hue}, 90%, 24%); width:4vh;height:4vh;border-radius:80%;`);
+    this.left = pos[0];
+    this.top = pos[1];
+    el.style.position = "absolute";
+    el.style.left = this.left*100 + '%'; 
+    el.style.top = this.top*100 + '%';
+  }
+  toggle() {
+	if(powerState && mode === 0){
+		let time = Math.random() * 1000 + 1000;
+		this.myStatus = ! this.myStatus;
+		if (this.myStatus === true) {
+		  this.lightOn()
+		} 
+		else {
+		  this.lightOff()
+		}
+		var that = this;
+		setTimeout(function() {that.toggle();}, time)
+	}
+	else {
+		var that = this;
+		setTimeout(function() {that.lightOff();}, 100)
+	}
+  }
+  lightOff(){
+	$('#'+this.name).css('backgroundColor', `hsl(${this.hue},90%,24%)`);
+  }
+  lightOn(){
+	$('#'+this.name).css('backgroundColor', `hsl(${this.hue},90%,80%)`);
+  }
+}
+
+var powerState = false;
+var blinkState = false;
+
+var mode = 0;
+var index = 0;
+
+Lamp.id = 1;
+var Lamps = []
+var sign = 1
+$('#toggleLight').click (function() {
+   powerState = !powerState;   // toggle
+   if (powerState === true) {
+	  if(mode === 0){
+		Lamps.forEach(function (b){
+			let time = Math.floor(Math.random() * 1000 + 1000);
+			var that = b;
+			setTimeout(function() {
+				that.toggle();
+			}, time);
+		})
+	  }
+	  else if (mode === 1){
+		toggle1();
+	  }
+	  else if (mode === 2){
+		toggle2()
+	  }
+   }
+   
+});
+$('#toggleMode').click (function() {
+	mode++;
+	if(mode === 2)
+		mode = 0;
+	if (powerState === true) {
+	  if(mode === 0){
+		setTimeout(function(){
+		Lamps.forEach(function (b){
+			let time = Math.floor(Math.random() * 1000 + 1000);
+			var that = b;
+			setTimeout(function() {
+				that.toggle();
+			}, time);
+		})},500)
+	  }
+	  else if (mode === 1){
+		setTimeout(toggle1,2000);
+	  }
+	  else if (mode === 2){
+		setTimeout(toggle2,500);
+	  }
+	}
+});
+function addLamps(){
+	let l1 = new Lamp ([0.5,0.2],Math.random() * 360);
+	Lamps.push(l1);
+	l1 = new Lamp ([0.45,0.3],Math.random() * 360);
+	Lamps.push(l1);
+	l1 = new Lamp ([0.55,0.35],Math.random() * 360);
+	Lamps.push(l1);
+	l1 = new Lamp ([0.47,0.4],Math.random() * 360);
+	Lamps.push(l1);
+	l1 = new Lamp ([0.58,0.5],Math.random() * 360);
+	Lamps.push(l1);
+	l1 = new Lamp ([0.4,0.6],Math.random() * 360);
+	Lamps.push(l1);
+	l1 = new Lamp ([0.65,0.65],Math.random() * 360);
+	Lamps.push(l1);
+	/*
+	for(let i = 0 ; i <Lamps.length; i++)
+	Lamps[i].startBlink();
+	*/
+}
+function toggle1(){
+	if(powerState && mode === 1){
+		if(index < Lamps.length){
+			$('#'+Lamps[index].name).css('backgroundColor', `hsl(${Lamps[index].hue},90%,80%)`);
+			index++;
+		}
+		else if(index >=Lamps.length && index - Lamps.length < Lamps.length){
+			$('#'+Lamps[index - Lamps.length].name).css('backgroundColor', `hsl(${Lamps[index - Lamps.length].hue},90%,24%)`);
+			index++;
+		}
+		else{
+			index = 0;
+		}
+		setTimeout(toggle1,100)
+	}
+	else {
+		setTimeout (function(){Lamps.forEach(function (b){b.lightOff()})}, 100);
+		index = 0;
+	}
+}
+function toggle2(){
+	if(powerState && mode === 2){
+		if(sign === 1){
+			Lamps.forEach(function (b){if(b.name % 2 === 1) b.lightOn()})
+			sign = -1;
+			Lamps.forEach(function (b){if(b.name % 2 === 0) b.lightOff()})
+		}
+		else if(sign === -1){
+			Lamps.forEach(function (b){if(b.name % 2 === 0) b.lightOn()})
+			sign = 1;
+			Lamps.forEach(function (b){if(b.name % 2 === 1) b.lightOff()})
+		}
+			setTimeout (toggle2, 1000);
+	}
+	else {
+		setTimeout (function(){Lamps.forEach(function (b){b.lightOff()})}, 100);
+		sign = 1;
+	}
+}
+
+addLamps()
+
+</script>
+</body>
+
+</html>
