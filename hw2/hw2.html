@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<style>
+body{
+	background: 	#CA8EFF;
+    }
+table{
+  border: 2px solid black;
+  background-color: #ffffff;
+  text-align:center;
+}
+th{
+  font-size:32px;
+}
+td{
+	font-size:40px;
+}
+input{
+	width:80%;
+	height:50%;
+}
+#outputF{
+  border: 1px black solid; background-color:white; width:100%;
+}
+
+h1{
+	font-size:40px;
+	text-align:center;
+}
+
+
+</style>
+<body>
+<div>
+
+
+<table style ="position : absolute; left:25%; top: 20%; width:20%; height:35%">
+  <tr>
+    <th colspan="3">V<hr style = "border-color:black; border-width: 3px;"></th>
+  </tr>
+  <tr>
+    <td>x</td>
+	<td><input type="number" id ="Vx"></input></td>
+  </tr>
+  <tr>
+    <td>y</td>
+	<td><input type="number" id ="Vy"></input></td>
+  </tr>
+  <tr>
+    <td>z</td>
+	<td><input type="number" id ="Vz"></input></td>
+  </tr>
+</table>
+<table style ="position : absolute; left:25%; top: 60%; width:20%; height:35%">
+  <tr>
+    <th colspan="3">W<hr style = "border-color:black; border-width: 3px;"></th>
+  </tr>
+  <tr>
+    <td>x</td>
+	<td><input type="number" id ="Wx"></input></td>
+  </tr>
+  <tr>
+    <td>y</td>
+	<td><input type="number" id ="Wy"></input></td>
+  </tr>
+  <tr>
+    <td>z</td>
+	<td><input type="number" id ="Wz"></input></td>
+  </tr>
+</table>
+<table style ="position : absolute; left:50%; top: 20%; width:30%; height:75%">
+  <tr>
+    <th colspan="3">inner product<hr style = "border-color:black; border-width: 3px;"></th>
+  </tr>
+  <tr>
+    <td>v&#8901;w</td>
+	<td colspan="2" id = "outputF" style = "height:40px;"><h1 id="innerProduct"></h1></td>
+  </tr>
+  <tr>
+	<th colspan="3">Vector product<hr style = "border-color:black; border-width: 3px;"></th>
+  </tr>
+    <td>x</td>
+	<td colspan="2" id = "outputF" style = "height:40px;"><h1 id="vecAnsX"></h1></td>
+  <tr>
+  </tr>
+    <td>y</td>
+	<td colspan="2" id = "outputF" style = "height:40px;"><h1 id="vecAnsY"></h1></td>
+  <tr>
+    <td>z</td>
+	<td colspan="2" id = "outputF" style = "height:40px;"><h1 id="vecAnsZ"></h1></td>
+  </tr>
+</table>
+</div>
+<script src="https://threejs.org/build/three.min.js"></script>
+<script>
+
+animate();
+function animate() {
+  //得到Vector
+  let VectorV = new THREE.Vector3();
+  VectorV.x = +document.getElementById("Vx").value;
+  VectorV.y = +document.getElementById("Vy").value;
+  VectorV.z = +document.getElementById("Vz").value;
+  
+  let VectorW = new THREE.Vector3();
+  VectorW.x = +document.getElementById("Wx").value;
+  VectorW.y = +document.getElementById("Wy").value;
+  VectorW.z = +document.getElementById("Wz").value;
+  //寫入答案
+  document.getElementById("innerProduct").innerHTML = VectorV.clone().dot(VectorW);
+  document.getElementById("vecAnsX").innerHTML = VectorV.clone().cross(VectorW).x;
+  document.getElementById("vecAnsY").innerHTML = VectorV.clone().cross(VectorW).y;
+  document.getElementById("vecAnsZ").innerHTML = VectorV.clone().cross(VectorW).z;
+
+  requestAnimationFrame(animate);
+}
+
+</script>
+</body>
+</html>
