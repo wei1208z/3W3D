@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<style>
+#info {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  color: #ffff00
+}
+
+body {
+  overflow: hidden;
+}
+
+</style>
+</head>
+
+<body> 
+<div id="info">
+<script src="https://threejs.org/build/three.min.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<button id = 'toggle1' style = "width: 15%;margin-right:25px">ViewPoint</button>
+<button id = 'toggle2' style = "width: 15%;margin-right:25px">Power Switch</button>
+</div>
+
+<script>
+var camera, scene, renderer;
+var spotLightHelper;
+var mode=0,change=false;
+var mode2=0;
+var spotLight,spotLight2,spotLight3,spotLight4,spotLight5,spotLight6,spotLight7,spotLight8,spotLight9,spotLight10,spotLight11,spotLight12,spotLight13,spotLight14;
+
+$("#toggle1").click(function(){
+  if(mode==0){
+   mode=1;
+  }
+  else if(mode==1){
+   mode=2
+  }
+  else if(mode==2){
+   mode=3
+  }
+  else if(mode==3){
+   mode=4
+  }
+  else if(mode==4){
+   mode=5
+  }
+  else if(mode==5){
+   mode=6
+  }
+  else if(mode==6){
+   mode=7;
+  }
+  else if(mode==7){
+   mode=8;
+  }
+  else if(mode==8){
+   mode=9;
+  }
+  else if(mode==9){
+   mode=10;
+  }
+  else if(mode==10){
+   mode=0;
+  }
+  change=true;
+})
+$("#toggle2").click(function(){
+   if(mode2==0){
+   mode2=1;
+   }
+   else if(mode2==1){
+   mode2=2;
+   }
+   else if(mode2==2){
+   mode2=0;
+   }
+})
+
+class Light{
+  constructor(x,y,z){
+    let light = new THREE.Mesh(new THREE.CylinderGeometry(1.5,4,5,16,16),new THREE.MeshBasicMaterial({color:'#E0E0E0'}))
+    light.position.set(x,y,z);
+    return light;
+  }
+}
+init();
+animate();
+
+function init() {
+
+  scene = new THREE.Scene();
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x888888);
+  document.body.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+  camera.position.z = -200;
+  camera.position.y = 100;
+  camera2 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+  let controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+  ////////////////////////////////////////////////////////////////
+  var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
+  //scene.add(gridXZ);
+  let light = new THREE.PointLight( 0xffffff, 0.3, 300 );
+  light.position.set(0, 25,0);
+  scene.add(light);
+  const spotLight = new THREE.SpotLight( 0xffffff,0.3);
+  spotLight.position.set( 100, 1000, 100 );
+  scene.add(spotLight)
+  
+  buildWall();
+  buildDirectionlight();
+  buildFloor();
+  buildFrame();
+  buildArt();
+}
+
+function animate() {
+  
+  if(mode2==0){
+  spotLight.intensity=0.5;
+  spotLight2.intensity=0.5;
+  spotLight3.intensity=0.5;
+  spotLight4.intensity=0.5;
+  spotLight5.intensity=0.5;
+  spotLight6.intensity=0.5;
+  spotLight7.intensity=0.5;
+  spotLight8.intensity=0.5;
+  spotLight9.intensity=0.5;
+  spotLight10.intensity=0.5;
+  spotLight11.intensity=0.5;
+  spotLight12.intensity=0.5;
+  spotLight13.intensity=0.5;
+  spotLight14.intensity=0.5;
+  }
+  else if(mode2==1){
+  spotLight.intensity=0.2;
+  spotLight2.intensity=0.2;
+  spotLight3.intensity=0.2;
+  spotLight4.intensity=0.2;
+  spotLight5.intensity=0.2;
+  spotLight6.intensity=0.2;
+  spotLight7.intensity=0.2;
+  spotLight8.intensity=0.2;
+  spotLight9.intensity=0.2;
+  spotLight10.intensity=0.2;
+  spotLight11.intensity=0.2;
+  spotLight12.intensity=0.2;
+  spotLight13.intensity=0.2;
+  spotLight14.intensity=0.2;
+
+  }
+  else if(mode2==2){
+    spotLight.intensity=0;
+  spotLight2.intensity=0;
+  spotLight3.intensity=0;
+  spotLight4.intensity=0;
+  spotLight5.intensity=0;
+  spotLight6.intensity=0;
+  spotLight7.intensity=0;
+  spotLight8.intensity=0;
+  spotLight9.intensity=0;
+  spotLight10.intensity=0;
+  spotLight11.intensity=0;
+  spotLight12.intensity=0;
+  spotLight13.intensity=0;
+  spotLight14.intensity=0;
+
+  }
+  requestAnimationFrame(animate);
+  render();
+
+}
+function buildWall(){
+  var wall=new THREE.Mesh(new THREE.BoxGeometry(200,50,5),new THREE.MeshPhongMaterial({color:'#FCFCFC'}));
+  wall.position.set(-100,25,0)
+  wall.rotation.y=Math.PI/2;
+  scene.add(wall);
+  
+  var wall2=new THREE.Mesh(new THREE.BoxGeometry(200,50,5),new THREE.MeshPhongMaterial({color:'#FCFCFC'}));
+  wall2.position.set(100,25,0)
+  wall2.rotation.y=Math.PI/2;
+  scene.add(wall2);
+  
+  var wall3=new THREE.Mesh(new THREE.BoxGeometry(200,50,5),new THREE.MeshPhongMaterial({color:'#FCFCFC'}));
+  wall3.position.set(0,25,100)
+  scene.add(wall3);
+  
+  var wall4=new THREE.Mesh(new THREE.BoxGeometry(90,50,5),new THREE.MeshPhongMaterial({color:'#FCFCFC'}));
+  wall4.position.set(55,25,-100)
+  scene.add(wall4);
+  
+  var wall5=new THREE.Mesh(new THREE.BoxGeometry(90,50,5),new THREE.MeshPhongMaterial({color:'#FCFCFC'}));
+  wall5.position.set(-55,25,-100)
+  scene.add(wall5);
+  
+  var wall6=new THREE.Mesh(new THREE.BoxGeometry(20,10,5),new THREE.MeshPhongMaterial({color:'#FCFCFC'}));
+  wall6.position.set(0,45,-100)
+  scene.add(wall6);
+
+  var wall9=new THREE.Mesh(new THREE.BoxGeometry(100,50,5),new THREE.MeshPhongMaterial({color:'#FCFCFC'}));
+  wall9.position.set(0,25,0)
+  scene.add(wall9);
+
+}
+function buildDirectionlight(){
+let directionalLight = new THREE.DirectionalLight( 0xffffff,0.5);
+  directionalLight.position.set(0,200,0);
+  scene.add( directionalLight );
+  let directionalLight2 = new THREE.DirectionalLight( 0xffffff,0.5);
+  directionalLight2.position.set(200,0,0);
+  scene.add( directionalLight2 );
+  let directionalLight3 = new THREE.DirectionalLight( 0xffffff,0.5);
+  directionalLight3.position.set(-200,0,0);
+  scene.add( directionalLight3 );
+  let directionalLight4 = new THREE.DirectionalLight( 0xffffff,0.5);
+  directionalLight4.position.set(0,0,200);
+  scene.add( directionalLight4 );
+  let directionalLight5 = new THREE.DirectionalLight( 0xffffff,0.5);
+  directionalLight5.position.set(0,0,-200);
+  scene.add( directionalLight5 );
+  
+}
+function buildFloor(){
+let texture = new THREE.TextureLoader().load("https://i.imgur.com/nn8KMLe.jpg");
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(5,5)
+   let floor = new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.MeshPhongMaterial({map:texture}));
+   floor.rotation.x=-Math.PI/2;
+   scene.add(floor)
+
+}
+function buildFrame(){
+let texture = new THREE.TextureLoader().load("https://i.imgur.com/w4kXaTB.jpg");
+  var pictureframe=new THREE.Mesh(new THREE.BoxGeometry(90,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe.position.set(0,25,97.5)
+  scene.add(pictureframe);
+
+  var pictureframe2=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe2.position.set(75,25,97.5)
+  scene.add(pictureframe2);
+
+  var pictureframe3=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe3.position.set(-75,25,97.5)
+  scene.add(pictureframe3);
+
+  var pictureframe4=new THREE.Mesh(new THREE.BoxGeometry(90,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe4.position.set(0,25,2.5)
+  scene.add(pictureframe4)
+  
+  var picturefram5=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  picturefram5.position.set(97.5,25,75)
+  picturefram5.rotation.y=-Math.PI/2;
+  scene.add(picturefram5);
+
+  var pictureframe6=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe6.position.set(97.5,25,25)
+  pictureframe6.rotation.y=-Math.PI/2;
+  scene.add(pictureframe6);
+
+  var pictureframe7=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe7.position.set(97.5,25,-25)
+  pictureframe7.rotation.y=-Math.PI/2;
+  scene.add(pictureframe7);
+
+  var pictureframe8=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe8.position.set(97.5,25,-75)
+  pictureframe8.rotation.y=-Math.PI/2;
+  scene.add(pictureframe8);
+
+  var picturefram9=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  picturefram9.position.set(-97.5,25,75)
+  picturefram9.rotation.y=Math.PI/2;
+  scene.add(picturefram9);
+
+  var pictureframe10=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe10.position.set(-97.5,25,25)
+  pictureframe10.rotation.y=Math.PI/2;
+  scene.add(pictureframe10);
+
+  var pictureframe11=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe11.position.set(-97.5,25,-25)
+  pictureframe11.rotation.y=Math.PI/2;
+  scene.add(pictureframe11);
+
+  var pictureframe12=new THREE.Mesh(new THREE.BoxGeometry(30,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe12.position.set(-97.5,25,-75)
+  pictureframe12.rotation.y=Math.PI/2;
+  scene.add(pictureframe12);
+
+  var pictureframe13=new THREE.Mesh(new THREE.BoxGeometry(70,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe13.position.set(55,25,-97.5)
+  pictureframe13.rotation.y=Math.PI
+  scene.add(pictureframe13);
+
+  var pictureframe14=new THREE.Mesh(new THREE.BoxGeometry(70,45,1),new THREE.MeshPhongMaterial({map:texture}));
+  pictureframe14.position.set(-55,25,-97.5)
+  pictureframe14.rotation.y=Math.PI
+  scene.add(pictureframe14);
+}
+function buildArt(){
+let texture = new THREE.TextureLoader().load("https://i.imgur.com/I3AxXkL.jpeg");
+  var art=new THREE.Mesh(new THREE.BoxGeometry(65,30,0.5),new THREE.MeshPhongMaterial({map:texture}));
+  art.position.set(0,25,97)
+  scene.add(art);
+  spotLight = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight.position.set(0, 40, 50);
+  spotLight.target = art;
+  scene.add(spotLight);
+
+  let texture2 = new THREE.TextureLoader().load("https://i.imgur.com/txJkBIC.png");
+  var art2=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture2}));
+  art2.position.set(75,25,97)
+  scene.add(art2);
+  spotLight2 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /8 , 0.9);
+  spotLight2.position.set(75, 40, 50);
+  spotLight2.target = art2;
+  scene.add(spotLight2);
+
+  let texture3 = new THREE.TextureLoader().load("https://i.imgur.com/PeckvzJ.jpeg");
+  var art3=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture3}));
+  art3.position.set(-75,25,97)
+  scene.add(art3);
+  spotLight3 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /8 , 0.9);
+  spotLight3.position.set(-75, 40, 50);
+  spotLight3.target = art3;
+  scene.add(spotLight3);
+
+  let textures = new THREE.TextureLoader().load("https://i.imgur.com/YNW6PF7.jpeg");
+  var arts=new THREE.Mesh(new THREE.BoxGeometry(90,40,0.5),new THREE.MeshPhongMaterial({map:textures}));
+  arts.position.set(0,25,-3)
+  scene.add(arts);
+  spotLights = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLights.position.set(0, 40, -50);
+  spotLights.target = arts;
+  scene.add(spotLights);
+
+  let texture4 = new THREE.TextureLoader().load("https://i.imgur.com/peOw8Cw.jpeg");
+  var art4=new THREE.Mesh(new THREE.BoxGeometry(65,30,0.5),new THREE.MeshPhongMaterial({map:texture4}));
+  art4.position.set(0,25,3)
+  scene.add(art4);
+  spotLight4 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight4.position.set(0, 40, 44);
+  spotLight4.target = art4;
+  scene.add(spotLight4);
+  
+  let texture5 = new THREE.TextureLoader().load("https://i.imgur.com/m5E7lWn.jpeg");
+  var art5=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture5}));
+  art5.position.set(97,25,75)
+  art5.rotation.y=-Math.PI/2;
+  scene.add(art5);
+  spotLight5 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight5.position.set(50,25,70);
+  spotLight5.target = art5;
+  scene.add(spotLight5);
+
+  let texture6 = new THREE.TextureLoader().load("https://i.imgur.com/GI5eowo.jpeg");
+  var art6=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture6}));
+  art6.position.set(97,25,25)
+  art6.rotation.y=-Math.PI/2;
+  scene.add(art6);
+  spotLight6 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight6.position.set(50,25,25);
+  spotLight6.target = art6;
+  scene.add(spotLight6);
+
+  let texture7 = new THREE.TextureLoader().load("https://i.imgur.com/dLg7x4S.jpeg");
+  var art7=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture7}));
+  art7.position.set(97,25,-25)
+  art7.rotation.y=-Math.PI/2;
+  scene.add(art7);
+  spotLight7 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight7.position.set(50,25,-25);
+  spotLight7.target = art7;
+  scene.add(spotLight7);
+
+  let texture8 = new THREE.TextureLoader().load("https://i.imgur.com/AxIvDzL.jpeg");
+  var art8=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture8}));
+  art8.position.set(97,25,-75)
+  art8.rotation.y=-Math.PI/2;
+  scene.add(art8);
+  spotLight8 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight8.position.set(50,25,-75);
+  spotLight8.target = art8;
+  scene.add(spotLight8);
+
+  let texture9 = new THREE.TextureLoader().load("https://i.imgur.com/MKX58SD.jpeg");
+  var art9=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture9}));
+  art9.position.set(-97,25,75)
+  art9.rotation.y=-Math.PI/2;
+  scene.add(art9);
+  spotLight9 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight9.position.set(-50,25,70);
+  spotLight9.target = art9;
+  scene.add(spotLight9);
+
+  let texture10 = new THREE.TextureLoader().load("https://i.imgur.com/mlVVEvE.jpeg");
+  var art10=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture10}));
+  art10.position.set(-97,25,25)
+  art10.rotation.y=-Math.PI/2;
+  scene.add(art10);
+  spotLight10 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight10.position.set(-50,25,25);
+  spotLight10.target = art10;
+  scene.add(spotLight10);
+
+  let texture11 = new THREE.TextureLoader().load("https://i.imgur.com/rydYXLX.jpeg");
+  var art11=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture11}));
+  art11.position.set(-97,25,-25)
+  art11.rotation.y=-Math.PI/2;
+  scene.add(art11);
+  spotLight11 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight11.position.set(-50,25,-25);
+  spotLight11.target = art11;
+  scene.add(spotLight11);
+
+  let texture12 = new THREE.TextureLoader().load("https://i.imgur.com/qSy9GF6.jpeg");
+  var art12=new THREE.Mesh(new THREE.BoxGeometry(21,30,0.5),new THREE.MeshPhongMaterial({map:texture12}));
+  art12.position.set(-97,25,-75)
+  art12.rotation.y=-Math.PI/2;
+  scene.add(art12);
+  spotLight12 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight12.position.set(-50,25,-75);
+  spotLight12.target = art12;
+  scene.add(spotLight12);
+
+  let texture13 = new THREE.TextureLoader().load("https://i.imgur.com/5VuL0P0.jpeg");
+  var art13=new THREE.Mesh(new THREE.BoxGeometry(50,30,0.5),new THREE.MeshPhongMaterial({map:texture13}));
+  art13.position.set(55,25,-97)
+  art13.rotation.y=Math.PI;
+  scene.add(art13);
+  spotLight13 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight13.position.set(55,25,-50);
+  spotLight13.target = art13;
+  scene.add(spotLight13);
+
+  let texture14 = new THREE.TextureLoader().load("https://i.imgur.com/NagwVUu.jpeg");
+  var art14=new THREE.Mesh(new THREE.BoxGeometry(50,30,0.5),new THREE.MeshPhongMaterial({map:texture14}));
+  art14.position.set(-55,25,-97)
+  art14.rotation.y=Math.PI;
+  scene.add(art14);
+  spotLight14 = new THREE.SpotLight(0xffffff, 0.5, 250, Math.PI /4 , 0.9);
+  spotLight14.position.set(-55,25,-50);
+  spotLight14.target = art14;
+  scene.add(spotLight14);
+}
+
+
+function render() {
+ if(change==true){
+   renderer.render(scene, camera2);
+   if(mode==1){
+    camera2.position.set(0,300,-1);
+    camera2.lookAt(0,0,0);
+   }
+   else if(mode==0){
+    change=false;
+   }
+   else if(mode==2){
+    camera2.position.set(0,40,10);
+    camera2.lookAt(0,25,97);
+   }
+   else if(mode==3){
+    camera2.position.set(60,40,40);
+    camera2.lookAt(100,25,100);
+   }
+   else if(mode==4){
+    camera2.position.set(-60,40,40);
+    camera2.lookAt(-100,25,100);
+   }
+    else if(mode==5){
+    camera2.position.set(0,40,60);
+    camera2.lookAt(0,25,0);
+   }
+   else if(mode==6){
+    camera2.position.set(30,30,-25);
+    camera2.lookAt(97,25,-25);
+   }
+   else if(mode==7){
+    camera2.position.set(-30,30,-25);
+    camera2.lookAt(-97,25,-25);
+   }
+   else if(mode==8){
+    camera2.position.set(55,25,-60);
+    camera2.lookAt(55,25,-97);
+   }
+   else if(mode==9){
+    camera2.position.set(-55,25,-60);
+    camera2.lookAt(-55,25,-97);
+   }
+   else if(mode==10){
+    camera2.position.set(0,30,-60);
+    camera2.lookAt(0,25,0);
+   }
+
+   
+  }
+  else
+  {
+  renderer.render(scene, camera);
+  }
+
+}
+
+</script>
+</body>
+
+</html>
