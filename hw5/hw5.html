@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+body{
+	margin:0px;
+}
+</style>
+</head>
+
+<body> 
+<h1 style="text-align:center">Homework 5</h1>
+<hr>
+<div id="container" style="float:left; margin:3px; width:40vw; height:40vw;">
+</div>
+
+<div style="float:left; margin-left: 10px; width:40vw;height:40vw; font-size:32px">
+    Radius:
+    <input id="radius" type= "range" min=5 max=15 value=10>
+    <span id='radiusPrint'>10</span>
+		<br>
+		<br>
+		<p>collision Sound:</p>
+		<input type="radio" name="soundselect" value="yes"> Yes
+		<input type="radio" name="soundselect" value="no" checked> No
+		<br>
+		<h1 id = "collision">no collision</h1>
+		<br>
+		<button id='start' style="width:45%; height:10%; botton:10px">Pause</button>
+		
+</div>
+
+<audio id="hitwall" style="display:none">
+<source src="./hit.wav">
+</audio>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://threejs.org/build/three.min.js"></script>
+
+<script>
+
+$('#radius').change(function() {
+  $('#radiusPrint').text($(this).val());
+});
+var camera, scene, renderer, controls;
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+var pickable;
+var start = true
+var target = null
+var box;
+var circle;
+var vel;
+var hitWall;
+
+init();
+animate();
+
+$('#start').click(function() {
+	start = !start
+	if(!start)
+		$("#start").text("Start")
+	else
+		$("#start").text("Pause")
+});
+
+
+function init() {
+	hitWall = document.getElementById('hitwall');
+	hitWall.volume = 0.1;
+  var ww = $("#container").innerWidth();
+  var hh = $("#container").innerHeight();
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(ww, hh);
+  renderer.setClearColor(0x888888);
+  $("#container").append(renderer.domElement);
+
+  ////////////////////////////////////////////////
+
+  scene = new THREE.Scene();
+  camera = new THREE.OrthographicCamera(-100, 100, 100, -100, -10, 100);
+  camera.position.z = 100;
+  scene.add(camera);
+
+  box = new THREE.Mesh(new THREE.BoxGeometry(30, 20),new THREE.MeshBasicMaterial({color:"black"}));
+  box.position.set(-30,-50, 1)
+  scene.add(box)
+
+  box2 = new THREE.Mesh(new THREE.BoxGeometry(40, 10),new THREE.MeshBasicMaterial({color:"black"}));
+  box2.position.set(40, 50, 1)
+  scene.add(box2)
+	
+	circle = new THREE.Mesh(new THREE.CircleGeometry(10,32),new THREE.MeshBasicMaterial({color:'yellow'}))
+	circle.position.set(0,0,1)
+	vel = new THREE.Vector3(30,25,0)
+	scene.add(circle)
+	
+	
+	
+	
+  var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
+	gridXZ.rotation.x = -Math.PI/2
+  scene.add(gridXZ);
+
+  window.addEventListener('resize', onWindowResize, false);
+	
+}
+function onWindowResize() {
+  var ww = $("#container").innerWidth();
+  var hh = $("#container").innerHeight();
+
+  camera.aspect = ww / hh;
+  camera.updateProjectionMatrix();
+  renderer.setSize(ww, hh);
+}
+
+
+function animate() {
+	let r = document.getElementById("radius").value;
+	let sound = document.querySelector('input[name="soundselect"]:checked').value
+	r = parseInt(r, 10)
+	circle.scale.set(r/10,r/10,r/10)
+	var dt = 0.016
+	if(start)
+  	circle.position.add(vel.clone().multiplyScalar(dt));
+  if (circle.position.x > 100 - r || circle.position.x < -100 + r){
+	    vel.x *= -1;
+			if(sound === "yes"){
+				hitWall.play()
+			}
+				circle.material.color.set(0xffff00)
+	}
+
+  if (circle.position.y > 100 - r || circle.position.y < -100 + r){
+	    vel.y *= -1;
+			if(sound === "yes"){
+				hitWall.play()
+			}
+				circle.material.color.set(0xffff00)
+	}
+
+	$.get("http://127.0.0.1:1337/api?cx="+ circle.position.x +"&cy="+ circle.position.y + "&r=" + r +"&minx=" + (box.position.x - 15) + "&miny=" + (box.position.y - 10) + "&maxx=" + (box.position.x + 15) + "&maxy=" + (box.position.y + 10), function( data ) {
+			
+		
+		if(data && data.output){
+			result = parseInt(data.output, 10);
+			if(result === 0){
+				$('#collision').text("not collision");
+				circle.material.color.set(0x00ff00)
+			}
+			if(result === 1){
+				$('#collision').text("Collision !");
+				circle.material.color.set(0xff0000)
+			}
+		}
+	});
+
+	$.get("http://127.0.0.1:1337/api?cx="+ circle.position.x +"&cy="+ circle.position.y + "&r=" + r +"&minx=" + (box2.position.x - 20) + "&miny=" + (box2.position.y - 5) + "&maxx=" + (box2.position.x + 20) + "&maxy=" + (box2.position.y + 5), function( data ) {
+			
+		
+		if(data && data.output){
+			result = parseInt(data.output, 10);
+			if(result === 0){
+				$('#collision').text("not collision");
+				circle.material.color.set(0x00ff00)
+			}
+			if(result === 1){
+				$('#collision').text("Collision !");
+				circle.material.color.set(0xff0000)
+			}
+		}
+	});
+	
+
+
+  requestAnimationFrame(animate);
+  render();
+	
+}
+
+function render() {
+  renderer.render(scene, camera);
+}
+</script>
+</body>
+
+</html>
